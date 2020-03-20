@@ -32,7 +32,7 @@ export default function Home() {
       </p>
 
       <Actions>
-        <Button handleOnClick={() => {}}>Fazer outro orçamento</Button>
+        <Button handleOnClick={_handleOnClick}>Fazer outro orçamento</Button>
       </Actions>
     </Container>
   );
