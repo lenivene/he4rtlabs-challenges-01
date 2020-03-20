@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import CurrencyInput from 'react-currency-input';
 import * as Yup from 'yup';
+import { toast } from 'react-toastify';
 
 import history from '../../services/history';
 import { calculate } from '../../store/modules/budget/actions';
@@ -9,29 +10,33 @@ import Button from '../../components/Button';
 import { Container, InputGroup } from './styles';
 
 const schema = Yup.object().shape({
-  total: Yup.number().required(),
-  dailyHours: Yup.number()
-    .positive()
-    .min(1)
-    .max(24)
-    .required(''),
   workedDays: Yup.number()
-    .positive()
+    .positive('Apenas valores positivos!')
     .min(1)
-    .required('')
-    .positive(),
+    .required('Por favor, informe o total de dias trabalhados.')
+    .positive('Apenas valores positivos!'),
   vacation: Yup.number()
-    .positive()
-    .required(''),
+    .typeError(
+      'Por favor, informe a quantidade de dias de férias corretamente (apenas números).'
+    )
+    .positive('Apenas valores positivos!'),
+  dailyHours: Yup.number().typeError(
+    'Por favor, informe a quantidade de horas trabalhadas corretamente (apenas números).'
+  ),
+  total: Yup.number()
+    .typeError(
+      'Por favor, informe o valor do projeto corretamente corretamente.'
+    )
+    .required('O campo Valor do projeto é obrigatório.'),
 });
 
 export default function Home() {
   const dispatch = useDispatch();
 
-  const [total, setTotal] = useState(1000);
-  const [dailyHours, setDailyHours] = useState(8);
-  const [workedDays, setWorkedDays] = useState(7);
-  const [vacation, setVacation] = useState(1);
+  const [total, setTotal] = useState('');
+  const [dailyHours, setDailyHours] = useState('');
+  const [workedDays, setWorkedDays] = useState('');
+  const [vacation, setVacation] = useState(0);
 
   function _handleOnChange(_, maskedvalue, floatvalue) {
     setTotal(floatvalue);
@@ -41,7 +46,13 @@ export default function Home() {
     try {
       await schema.validate({ total, dailyHours, workedDays, vacation });
     } catch (error) {
-      alert(error.message);
+      toast.error(error.message);
+      return;
+    }
+
+    if (parseInt(dailyHours, 10) < 1 || parseInt(dailyHours, 10) > 24) {
+      toast.error('O dia só tem 24 horas :)');
+      return;
     }
 
     dispatch(calculate(total, dailyHours, workedDays, vacation));
