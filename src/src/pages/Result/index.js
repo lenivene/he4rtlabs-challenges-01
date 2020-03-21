@@ -27,8 +27,8 @@ export default function Home() {
       </p>
 
       <p>
-        (Valor do projeto / (Dias trabalhaods * 4 * Horas diárias) ) + ( (
-        Férias * Dias trabalhaods * Horas diárias ) ).
+        (Valor do projeto / (Dias trabalhados * 4 * Horas diárias) ) + ( (
+        Férias * Dias trabalhados * Horas diárias ) ).
       </p>
 
       <Actions>
